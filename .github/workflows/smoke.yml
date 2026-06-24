@@ -1,0 +1,16 @@
+name: Smoke
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch: {}
+
+jobs:
+  smoke:
+    uses: markmorcos/build-tooling/.github/workflows/smoke-build.yml@v1
+    with:
+      # No ESLint config in this project yet; typecheck + engine tests cover it.
+      run-lint: false
+      run-typecheck: true
+      run-tests: true

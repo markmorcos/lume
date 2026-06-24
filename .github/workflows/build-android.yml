@@ -1,0 +1,28 @@
+name: Build Android
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Env profile (release tag + artifact name)
+        type: string
+        default: production
+      artifact-type:
+        description: apk | aab | both
+        type: choice
+        default: apk
+        options: [apk, aab, both]
+
+jobs:
+  android:
+    uses: markmorcos/build-tooling/.github/workflows/build-android.yml@v1
+    with:
+      app-slug: lume
+      profile: ${{ inputs.profile }}
+      artifact-type: ${{ inputs.artifact-type }}
+    secrets:
+      # LUMÉ has no backend (scoring is 100% on-device), but the shared
+      # workflow requires these to be non-empty. Set as repo secrets to
+      # placeholder values; nothing in the app reads them at runtime.
+      EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}

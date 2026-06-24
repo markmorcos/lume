@@ -1,0 +1,10 @@
+name: Publish build pages
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    uses: markmorcos/build-tooling/.github/workflows/publish-build-pages.yml@v1
+    with:
+      app-slug: lume

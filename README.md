@@ -122,7 +122,7 @@ non-empty — they're set to placeholder repo secrets and never read at runtime.
 Without an `ANDROID_KEYSTORE_BASE64` secret the APK is debug-signed (fine for
 sideload); add the keystore secrets for a release-signed build.
 
-`app.json` carries the bundle id (`tech.morcos.lume`), permission strings and
+`app.json` carries the bundle id (`dev.markmorcos.lume`), permission strings and
 plugin config. **iOS** uses the build-tooling `build-ios.yml`, which is a
 skeleton pending Apple signing secrets.
 
@@ -150,7 +150,7 @@ lazy-loaded; on iOS / Expo Go / sideloaded debug builds it falls back to the
 Play Console setup (one-time):
 
 1. **Create the app** — Play Console → Create app → "LUMÉ", Free. Package
-   `tech.morcos.lume` is registered on first AAB upload.
+   `dev.markmorcos.lume` is registered on first AAB upload.
 2. **Internal testing release** — Testing → Internal testing → Create release →
    upload `app-release.aab`. Play App Signing is on by default; the generated
    keystore is your *upload* key (Google holds the app-signing key).

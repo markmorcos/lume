@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="./shared.css" />
+<style>
+  html, body { width: 1024px; height: 500px; }
+  .fg {
+    width: 1024px; height: 500px; position: relative; overflow: hidden;
+    background:
+      radial-gradient(60% 120% at 16% 30%, rgba(124,92,255,0.30), transparent 60%),
+      radial-gradient(50% 120% at 92% 80%, rgba(124,92,255,0.16), transparent 60%),
+      var(--ink);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 0 88px;
+  }
+  .fg .logo { font-family: 'Bodoni Moda', serif; font-size: 150px; letter-spacing: 3px; color: var(--paper); line-height: 1; }
+  .fg .tag { font-family: 'Bodoni Moda', serif; font-size: 52px; color: var(--paper); margin-top: 10px; }
+  .fg .kick { font-family: 'Space Mono', monospace; font-size: 22px; letter-spacing: 6px; text-transform: uppercase; color: var(--accent-soft); margin-bottom: 20px; }
+  .fg .acc { color: var(--accent); }
+</style>
+</head>
+<body>
+  <div class="fg">
+    <div class="kick">Best-shot picture picker</div>
+    <div class="logo">LUMÉ</div>
+    <div class="tag">Pick your best shot<span class="acc">.</span></div>
+  </div>
+</body>
+</html>

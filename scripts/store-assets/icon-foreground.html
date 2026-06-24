@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="./shared.css" />
+<style>
+  html, body { width: 1024px; height: 1024px; background: transparent; }
+  /* Adaptive-icon foreground: mark sits inside the ~66% safe zone, transparent
+     background (the ink fill is supplied by android.adaptiveIcon.backgroundColor). */
+  .wrap { width: 1024px; height: 1024px; display: flex; align-items: center; justify-content: center; background: transparent; }
+  .mark { position: relative; width: 380px; height: 420px; }
+  .mark .l {
+    position: absolute; left: 50%; top: 52%; transform: translate(-50%,-50%);
+    font-family: 'Bodoni Moda', serif; font-weight: 600; font-size: 520px;
+    color: var(--paper); line-height: 1;
+  }
+  .mark .acute {
+    position: absolute; right: 18px; top: 22px;
+    width: 104px; height: 28px; border-radius: 16px;
+    background: var(--accent); transform: rotate(-32deg);
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="mark"><div class="l">L</div><div class="acute"></div></div>
+  </div>
+</body>
+</html>

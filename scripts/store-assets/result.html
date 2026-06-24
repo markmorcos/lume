@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><link rel="stylesheet" href="./shared.css" />
+<style>
+  .winner { border-radius: 40px; overflow: hidden; border: 2px solid var(--hairline); background: var(--ink-soft); }
+  .winner .pic { position: relative; height: 700px; }
+  .face-hi { position:absolute; inset:0; background: radial-gradient(34% 26% at 50% 30%, rgba(255,245,235,0.55), rgba(255,245,235,0) 60%); }
+  .subs { padding: 40px 44px 46px; }
+  .runners { display: flex; gap: 26px; margin-top: 26px; }
+  .runner { flex: 1; border-radius: 34px; overflow: hidden; border: 2px solid var(--hairline); background: var(--ink-soft); }
+  .runner .pic { position: relative; height: 360px; }
+  .runner .foot { display:flex; justify-content:space-between; align-items:baseline; padding: 26px 30px; }
+  .runner .foot .num { font-family:'Bodoni Moda',serif; font-size: 70px; }
+  .runner .foot .lbl { font-family:'Space Mono',monospace; font-size: 20px; letter-spacing:3px; color: var(--on-ink-dim); }
+</style>
+</head>
+<body>
+  <div class="screen" style="padding-bottom:90px;">
+    <div class="statusbar"><span>9:41</span><span class="dots">5G ▮▮▮</span></div>
+
+    <div class="caption">Ranked in seconds, on your phone</div>
+    <div class="kicker" style="margin-bottom:16px;">the verdict · from 8</div>
+    <div class="h2">Your top three</div>
+
+    <div class="winner" style="margin-top:40px;">
+      <div class="pic portrait p-warm">
+        <div class="face-hi"></div>
+        <div class="tag-pill">01 · THE ONE</div>
+        <div class="overall"><div class="num">94</div><div class="lbl">OVERALL</div></div>
+      </div>
+      <div class="subs">
+        <div class="subrow"><div class="lab">Eye contact</div><div class="bar"><i style="width:96%"></i></div><div class="val">9.6</div></div>
+        <div class="subrow"><div class="lab">Clarity</div><div class="bar"><i style="width:95%"></i></div><div class="val">9.5</div></div>
+        <div class="subrow"><div class="lab">Smile</div><div class="bar"><i style="width:92%"></i></div><div class="val">9.2</div></div>
+        <div class="subrow" style="margin-bottom:0;"><div class="lab">Light &amp; colour</div><div class="bar"><i style="width:88%"></i></div><div class="val">8.8</div></div>
+      </div>
+    </div>
+
+    <div class="runners">
+      <div class="runner">
+        <div class="pic portrait p-cool"><div class="face-hi"></div><div class="tag-pill">02</div></div>
+        <div class="foot"><span class="num">89</span><span class="lbl">OVERALL</span></div>
+      </div>
+      <div class="runner">
+        <div class="pic portrait p-rose"><div class="face-hi"></div><div class="tag-pill">03</div></div>
+        <div class="foot"><span class="num">86</span><span class="lbl">OVERALL</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

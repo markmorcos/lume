@@ -2,6 +2,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -23,6 +24,7 @@ import {
   PRODUCT_ID,
   PurchaseResult,
 } from "../iap/purchases";
+import { initGooglePlay } from "../iap/googlePlay";
 
 export interface PickedAsset {
   id: string;
@@ -93,6 +95,24 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   // Raw 0–10 scores live independently of weighting so re-ranking on a preset
   // or toggle change is instant (no re-decode). See effectiveWeights().
   const rawScores = useRef<Shot[]>([]);
+
+  // Activate Google Play billing (Android) and reflect any existing
+  // entitlement on launch — restores premium across reinstalls/devices.
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      await initGooglePlay();
+      try {
+        const active = await getPurchaseProvider().refresh();
+        if (alive && active) setIsPremium(true);
+      } catch {
+        // entitlement check failed (offline / no billing) — default to free
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const effectiveWeights = useCallback(
     (p: Preset, off: Set<Criterion>): WeightMap => {

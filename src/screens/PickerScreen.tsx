@@ -110,25 +110,35 @@ export function PickerScreen() {
   const confirm = useCallback(async () => {
     if (!selected.length) return;
     setResolving(true);
+    // Build the picked list from what we already have, then try to upgrade each
+    // uri to a decodable localUri. Resolution is best-effort and never blocks
+    // navigation: a slow/failing getAssetInfoAsync must not strand the user on
+    // the picker (the engine falls back to neutral scores on any unreadable
+    // asset anyway).
+    const base: PickedAsset[] = selected
+      .map((id) => assets.find((x) => x.id === id))
+      .filter((a): a is MediaLibrary.Asset => !!a)
+      .map((a) => ({ id: a.id, uri: a.uri, width: a.width, height: a.height }));
+
     try {
-      // Resolve real localUri (ph:// can't be decoded directly by the engine).
-      const picked: PickedAsset[] = [];
-      for (const id of selected) {
-        const a = assets.find((x) => x.id === id);
-        if (!a) continue;
-        const info = await MediaLibrary.getAssetInfoAsync(a);
-        picked.push({
-          id: a.id,
-          uri: info.localUri ?? a.uri,
-          width: a.width,
-          height: a.height,
-        });
-      }
-      setAssets(picked);
-      track("select_confirm", { count: picked.length });
-      beginCriteria();
+      const resolved = await Promise.all(
+        base.map(async (p) => {
+          try {
+            const a = assets.find((x) => x.id === p.id)!;
+            const info = await MediaLibrary.getAssetInfoAsync(a);
+            return { ...p, uri: info.localUri ?? p.uri };
+          } catch {
+            return p; // keep the original uri; decode step will cope
+          }
+        })
+      );
+      setAssets(resolved);
+    } catch {
+      setAssets(base); // never block on resolution
     } finally {
+      track("select_confirm", { count: base.length });
       setResolving(false);
+      beginCriteria();
     }
   }, [selected, assets, setAssets, beginCriteria]);
 

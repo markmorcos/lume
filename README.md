@@ -126,6 +126,46 @@ sideload); add the keystore secrets for a release-signed build.
 plugin config. **iOS** uses the build-tooling `build-ios.yml`, which is a
 skeleton pending Apple signing secrets.
 
+### Release signing
+
+CI release-signs when `ANDROID_KEYSTORE_BASE64` + `ANDROID_KEYSTORE_PASSWORD` +
+`ANDROID_KEY_ALIAS` + `ANDROID_KEY_PASSWORD` repo secrets are set. The upload
+keystore lives at `~/lume-upload-key/` (back it up — the password is not
+recoverable from CI). Bump `android.versionCode` in `app.json` before every new
+Play upload.
+
+```bash
+gh workflow run "Build Android" -F profile=production -F artifact-type=aab
+gh release list   # download the app-release.aab asset, upload to Play
+```
+
+## In-app subscriptions (Google Play)
+
+Billing is implemented with **expo-iap** (`src/iap/googlePlay.ts`), plugged into
+the `PurchaseProvider` interface and gated behind `session.isPremium`. It is
+lazy-loaded; on iOS / Expo Go / sideloaded debug builds it falls back to the
+`MockProvider`. **Real purchases only work for an app installed from Play
+(internal testing track or higher), release-signed** — not for sideloaded APKs.
+
+Play Console setup (one-time):
+
+1. **Create the app** — Play Console → Create app → "LUMÉ", Free. Package
+   `tech.morcos.lume` is registered on first AAB upload.
+2. **Internal testing release** — Testing → Internal testing → Create release →
+   upload `app-release.aab`. Play App Signing is on by default; the generated
+   keystore is your *upload* key (Google holds the app-signing key).
+3. **App content** — complete Privacy policy URL, Data safety (declare photos
+   are processed on-device, **not collected/shared**), Content rating, Target
+   audience, Ads = No.
+4. **Testers** — Internal testing → Testers → add your Google account(s); also
+   add them under Setup → License testing (test purchases, no charge).
+5. **Subscription** — Monetize → Products → Subscriptions → Create:
+   product ID **`lume.premium.monthly`** (must match `PRODUCT_ID`). Base plan:
+   auto-renewing, **P1M**, **$6.99**. Add an **offer** → Free trial → New
+   customers → **7 days (P7D)**. Activate base plan, offer, and subscription.
+6. **Install from the internal-testing opt-in link** signed in as a tester. The
+   paywall's "Start 7-day free trial" then shows the Play sheet with the trial.
+
 ## Calibration (pre-GTM, §10 of the brief)
 
 Collect ~30–50 photo batches with human "best pick" labels; measure top-1 and

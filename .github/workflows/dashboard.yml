@@ -19,6 +19,12 @@ on:
 permissions:
   contents: write
 
+# Serialize gh-pages deploys — overlapping force-pushes spawn concurrent Pages
+# builds that cancel each other into an errored state.
+concurrency:
+  group: gh-pages-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

@@ -2,12 +2,11 @@
 /*
  * LUMÉ build dashboard.
  *
- * Reads a committed ./releases.json FIRST (same-origin static file, no rate
- * limit) so the page always renders — the public GitHub API caps unauthenticated
- * requests at 60/hr per IP, which mobile carriers (shared NAT) routinely exhaust,
- * yielding a 403. releases.json is regenerated server-side (5000/hr authenticated)
- * by .github/workflows/dashboard.yml after every build. The live API is only a
- * last-resort fallback if the static file is missing.
+ * Fetches the repo's GitHub Releases live on every page load (same behaviour as
+ * the shared build-tooling dashboard) — delete a release on github.com and it
+ * disappears here on next refresh, no redeploy needed. The public Releases API
+ * is unauthenticated (60/hr per IP); on a shared/mobile IP that can 403, in
+ * which case we show a clear message and a link to the releases page.
  */
 (function () {
   'use strict';
@@ -22,7 +21,17 @@
     filters: document.getElementById('filters'),
   };
 
-  loadReleases()
+  fetch('https://api.github.com/repos/' + repo + '/releases?per_page=100', {
+    headers: { Accept: 'application/vnd.github+json' },
+  })
+    .then(function (res) {
+      if (res.status === 403)
+        throw new Error('GitHub rate-limited this network (403). Open github.com/' + repo + '/releases, or try again later / on Wi-Fi.');
+      if (res.status === 404)
+        throw new Error('github.com/' + repo + ' is private or missing — the public Releases API returns 404.');
+      if (!res.ok) throw new Error('GitHub API ' + res.status);
+      return res.json();
+    })
     .then(function (releases) {
       render(releases.map(parseRelease).filter(Boolean));
     })
@@ -30,28 +39,6 @@
       console.error(err);
       showError((err && err.message) || 'Failed to load releases.');
     });
-
-  // Static-first, API-fallback.
-  function loadReleases() {
-    return fetch('./releases.json?cb=' + Date.now())
-      .then(function (res) {
-        if (!res.ok) throw new Error('no static');
-        return res.json();
-      })
-      .catch(function () {
-        return fetch(
-          'https://api.github.com/repos/' + repo + '/releases?per_page=100',
-          { headers: { Accept: 'application/vnd.github+json' } }
-        ).then(function (res) {
-          if (res.status === 403)
-            throw new Error(
-              'GitHub API rate-limited (403). The dashboard normally serves a cached releases.json — re-run the dashboard workflow to refresh it.'
-            );
-          if (!res.ok) throw new Error('GitHub API ' + res.status);
-          return res.json();
-        });
-      });
-  }
 
   function parseRelease(release) {
     if (!release || release.draft) return null;

@@ -5,24 +5,28 @@ on:
     inputs:
       profile:
         description: Env profile (release tag + artifact name)
-        type: string
+        required: true
         default: production
-      artifact-type:
-        description: apk | aab | both
         type: choice
+        options: [development, preview, production]
+      artifact-type:
+        description: 'Output: apk (sideload), aab (Play Console), or both'
+        required: true
         default: apk
+        type: choice
         options: [apk, aab, both]
 
 jobs:
-  android:
+  build:
     uses: markmorcos/build-tooling/.github/workflows/build-android.yml@v1
+    permissions:
+      contents: write
     with:
       app-slug: lume
       profile: ${{ inputs.profile }}
       artifact-type: ${{ inputs.artifact-type }}
-    secrets:
-      # LUMÉ has no backend (scoring is 100% on-device), but the shared
-      # workflow requires these to be non-empty. Set as repo secrets to
-      # placeholder values; nothing in the app reads them at runtime.
-      EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
-      EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+    # LUMÉ has no backend (scoring is 100% on-device), but the shared
+    # workflow requires EXPO_PUBLIC_SUPABASE_* to be non-empty. They're set
+    # to placeholder repo secrets and never read at runtime; inherit passes
+    # them through.
+    secrets: inherit

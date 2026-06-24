@@ -35,5 +35,6 @@
     "test": "tsx scripts/engineCheck.ts",
     "check": "npm run typecheck && npm run test"
   },
-  "private": true
+  "private": true,
+  "packageManager": "pnpm@10.26.0"
 }

@@ -1,7 +1,21 @@
 name: Publish build pages
 
+# Publishes the build dashboard to this repo's `gh-pages` branch. The page is
+# fully client-side (queries the public Releases API on each load).
+#
+# One-time setup after the first successful run:
+#   Settings → Pages → Source = Deploy from a branch
+#                      Branch = gh-pages, folder = / (root)
+# Dashboard then lives at https://markmorcos.github.io/lume/
+
 on:
   workflow_dispatch: {}
+
+# Reusable workflows inherit at most the caller's permissions; the default
+# token is contents:read, so granting write here is mandatory for the gh-pages
+# commit.
+permissions:
+  contents: write
 
 jobs:
   publish:

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="x-build-repo" content="markmorcos/lume" />
+  <meta name="x-app-slug" content="lume" />
+  <title>lume · builds</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <header class="hdr">
+    <h1>
+      <span class="hdr-app">lume</span>
+      <span class="hdr-sep">/</span>
+      <span class="hdr-section">builds</span>
+    </h1>
+    <p class="hdr-meta">
+      <a href="https://github.com/markmorcos/lume/releases" target="_blank" rel="noopener">github.com/markmorcos/lume/releases</a>
+    </p>
+  </header>
+
+  <nav class="filters" id="filters" aria-label="Filter builds by profile"></nav>
+
+  <main id="main">
+    <p class="state" id="state-loading">Loading…</p>
+    <p class="state state-error" id="state-error" hidden></p>
+    <p class="state" id="state-empty" hidden>No releases yet.</p>
+    <ul class="grid" id="grid" hidden></ul>
+  </main>
+
+  <footer class="ftr">
+    <span>lume build dashboard</span>
+    <span class="ftr-sep">·</span>
+    <a href="https://github.com/markmorcos/build-tooling" target="_blank" rel="noopener">build-tooling</a>
+  </footer>
+</body>
+</html>

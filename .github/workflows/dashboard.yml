@@ -1,0 +1,38 @@
+name: Dashboard
+
+# Deploys the static build dashboard to gh-pages and refreshes releases.json
+# from the authenticated API (5000/hr) so the page never depends on the
+# unauthenticated GitHub API at load time (60/hr per IP → 403 on shared mobile
+# IPs). Runs after every Android build, on demand, and on dashboard edits.
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - "dashboard/**"
+      - ".github/workflows/dashboard.yml"
+  workflow_run:
+    workflows: ["Build Android"]
+    types: [completed]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate releases.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/${{ github.repository }}/releases?per_page=100" > dashboard/releases.json
+          echo "releases cached: $(node -e "console.log(require('./dashboard/releases.json').length)")"
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ github.token }}
+          publish_dir: ./dashboard
+          publish_branch: gh-pages
+          force_orphan: true

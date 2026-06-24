@@ -39,3 +39,6 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Generated dashboard data (produced in CI, deployed to gh-pages)
+dashboard/releases.json
